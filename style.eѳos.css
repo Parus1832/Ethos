@@ -1,0 +1,19 @@
+
+#calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-cell {
+  border: 1px solid #ccc;
+  padding: 4px;
+  min-height: 40px;
+  text-align: center;
+}
+
+.calendar-header {
+  text-align: center;
+  font-weight: bold;
+  padding: 4px;
+}

@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EѲOS</title>
+  <link rel="stylesheet" href="style.eѳos.css">
+  <link rel="manifest" href="manifest.eѳos.json">
+</head>
+<body>
+  <nav>
+    <button onclick="showPage('praxis')">プラクシス</button>
+    <button onclick="showPage('calendar')">カレンダー</button>
+  </nav>
+  
+  <div id="page-praxis">
+    <h1>EѲOS</h1>
+    <h2>Praksis axloriv</h2>
+    <div id="praxis-list"></div>
+  </div>
+
+  <div id="page-calendar">
+    <h2>カレンダー</h2>
+    <div id="calendar-grid"></div>
+  </div>
+
+  <script src="app.eѳos.js"></script>
+</body>
+</html>
