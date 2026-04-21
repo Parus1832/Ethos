@@ -1,7 +1,7 @@
 const praxisList = [
   { emoji: "🌱", text: "Svarmate bultuqarbuk", level: "初級" },
   { emoji: "🛡️", text: "Anelte Plank yuç-cuti", level: "中級" },
-  { emoji: "📖", text: "Talamte qwaid loga-Arabiv bir-tavi", level: "上級" }
+  { emoji: "📖", text: "Talamte qwaid loga-Janubiv bir-tavi", level: "上級" }
 ];
 
 const container = document.getElementById("praxis-list");
