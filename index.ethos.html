@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -20,11 +19,23 @@
     <div id="praxis-list"></div>
   </div>
 
-  <div id="page-calendar">
-    <h2>Oracuic</h2>
-    <div id="calendar-grid"></div>
+<div id="page-calendar">
+  <h2>Oracuic</h2>
+  <div id="calendar-nav">
+    <button id="prev-month">←</button>
+    <span id="current-month-label"></span>
+    <button id="next-month">→</button>
   </div>
+  <div id="calendar-grid"></div>
+</div>
 
   <script src="app.ethos.js"></script>
+  <div id="memo-modal" style="display:none;">
+  <div id="memo-modal-inner">
+    <p id="memo-modal-date"></p>
+    <div id="memo-modal-list"></div>
+    <button id="memo-modal-close">閉じる</button>
+  </div>
+</div>
 </body>
 </html>
