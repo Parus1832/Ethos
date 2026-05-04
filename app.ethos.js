@@ -1,7 +1,12 @@
 const praxisList = [
-  { emoji: "🌱", text: "Svarmate bultuqarbuk", level: "初級" },
-  { emoji: "🛡️", text: "Anelte Plank durd-cuti", level: "中級" },
-  { emoji: "📖", text: "Talamte qwaid loga-Janubiv bir-tavi", level: "上級" }
+  { emoji: "🌱", text: "Svarmate bultuqarbuz", level: "初級", frequency: 3 },
+  { emoji: "🛡️", text: "Anelte Plank durd-cuti", level: "初級", frequency: 1 },
+  { emoji: "💅", text: "Svarate aq bir-tavi", level: "中級", frequency: 12 },
+  { emoji: "🛏️", text: "Tabdiჲlte prostinuz", level: "中級", frequency: 7 },
+  { emoji: "🚶", text: "Rafte hamar gnumner", level: "中級", frequency: 3 },
+  { emoji: "📖", text: "Talamte qwaid loga-Janubiv bir-tavi", level: "上級", frequency: 4 },
+  { emoji: "📒", text: "Katabte tetruz", level: "上級", frequency: 4 },
+  { emoji: "🎙️", text: "Zingte liduk", level: "上級", frequency: 4 },
 ];
 
 const container = document.getElementById("praxis-list");
@@ -13,7 +18,44 @@ if (lastDate !== today) {
     localStorage.removeItem(`praxis-${index}`);
   });
   localStorage.setItem("last-date", today);
+
+  // frequencyに基づいてデイリー候補を選出
+  const todayDate = new Date();
+  const dailyCandidates = praxisList
+    .map((p, index) => ({ p, index }))
+    .filter(({ p, index }) => {
+      const lastDone = localStorage.getItem(`last-done-${index}`);
+      if (!lastDone) return true;
+      const daysSince = (todayDate - new Date(lastDone)) / (1000 * 60 * 60 * 24);
+      return daysSince >= p.frequency;
+    });
+
+  // frequencyが満期のものを優先確保
+  const urgent = dailyCandidates.filter(({ p, index }) => {
+    const lastDone = localStorage.getItem(`last-done-${index}`);
+    if (!lastDone) return false;
+    const daysSince = (todayDate - new Date(lastDone)) / (1000 * 60 * 60 * 24);
+    return daysSince >= p.frequency && p.frequency > 1;
+  });
+
+  // 残り枠を初・中・上バランスで埋める
+  const levels = ["初級", "中級", "上級"];
+  const remaining = levels.map(level =>
+    dailyCandidates
+      .filter(({ p }) => p.level === level)
+      .filter(({ index }) => !urgent.find(u => u.index === index))
+      .sort(() => Math.random() - 0.5)[0]
+  ).filter(Boolean);
+
+  const dailyIndices = [
+    ...urgent,
+    ...remaining
+  ].slice(0, 3).map(({ index }) => index);
+
+  localStorage.setItem("daily-indices", JSON.stringify(dailyIndices));
 }
+
+const dailyIndices = JSON.parse(localStorage.getItem("daily-indices") || "[]");
 
 praxisList.forEach((p, index) => {
   const div = document.createElement("div");
@@ -24,7 +66,13 @@ praxisList.forEach((p, index) => {
     <span class="text">${p.text}</span>
     <input type="checkbox" class="check">
   `;
-  container.appendChild(div);
+
+  const isDaily = dailyIndices.includes(index);
+  if (isDaily) {
+    document.getElementById("praxis-list").appendChild(div);
+  } else {
+    document.getElementById("praxis-all").appendChild(div);
+  }
 
   const checkbox = div.querySelector(".check");
 
@@ -37,6 +85,7 @@ praxisList.forEach((p, index) => {
     const dateKey = `stamp-${today}-${index}`;
     if (checkbox.checked) {
       localStorage.setItem(dateKey, p.emoji);
+      localStorage.setItem(`last-done-${index}`, today);
 
       const existingMemo = div.querySelector(".memo-box");
       if (!existingMemo) {
