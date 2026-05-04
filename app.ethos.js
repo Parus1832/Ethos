@@ -201,3 +201,32 @@ function importData() {
   };
   input.click();
 }
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.ethos.js").then((reg) => {
+    reg.pushManager;
+  });
+}
+
+function scheduleNotification() {
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      navigator.serviceWorker.ready.then((reg) => {
+        const now = new Date();
+        const target = new Date();
+        target.setHours(14, 0, 0, 0);
+        if (target <= now) target.setDate(target.getDate() + 1);
+        const delay = target - now;
+
+        setTimeout(() => {
+          reg.showNotification("EѲOS", {
+            body: "Sianeltaz Praksis axloriv?👟",
+            icon: "icon.ethos.png"
+          });
+        }, delay);
+      });
+    }
+  });
+}
+
+scheduleNotification();
