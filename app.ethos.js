@@ -1,12 +1,24 @@
 const praxisList = [
   { emoji: "🌱", text: "Svarmate bultuqarbuz", level: "初級", frequency: 3 },
   { emoji: "🛡️", text: "Anelte Plank durd-cuti", level: "初級", frequency: 1 },
-  { emoji: "💅", text: "Svarate aq bir-tavi", level: "中級", frequency: 12 },
+  { emoji: "💅", text: "Qaigute nogatuk", level: "中級", frequency: 12 },
   { emoji: "🛏️", text: "Tabdiჲlte prostinuz", level: "中級", frequency: 7 },
   { emoji: "🚶", text: "Rafte hamar gnumner", level: "中級", frequency: 3 },
   { emoji: "📖", text: "Talamte qwaid loga-Janubiv bir-tavi", level: "上級", frequency: 4 },
   { emoji: "📒", text: "Katabte tetruz", level: "上級", frequency: 4 },
   { emoji: "🎙️", text: "Zingte liduk", level: "上級", frequency: 4 },
+  { emoji: "🚀", text: "", level: "上級", frequency: 4 },
+];
+
+const diaryList = [
+  { emoji: "🍴", text: "Yemad", },
+  { emoji: "🍳", text: "Bişirad", },
+  { emoji: "🎶", text: "Xor", },
+  { emoji: "🎹", text: "Talamad", },
+  { emoji: "🎥", text: "Rafad depi hamerg kam pilmi", },
+  { emoji: "🧍", text: "Gyorşad het dost", },
+  { emoji: "🫏", text: "karad", },
+  { emoji: "💬", text: "", },
 ];
 
 const container = document.getElementById("praxis-list");
@@ -54,6 +66,52 @@ if (lastDate !== today) {
 
   localStorage.setItem("daily-indices", JSON.stringify(dailyIndices));
 }
+
+// 日記リストを描画
+const diaryContainer = document.getElementById("diary-list");
+diaryList.forEach((d, index) => {
+  const div = document.createElement("div");
+  div.className = "praxis-item diary-item";
+  div.innerHTML = `
+    <span class="emoji">${d.emoji}</span>
+    <span class="text">${d.text}</span>
+    <input type="checkbox" class="diary-check">
+  `;
+  diaryContainer.appendChild(div);
+
+  const checkbox = div.querySelector(".diary-check");
+  const saved = localStorage.getItem(`diary-${today}-${index}`);
+  if (saved === "true") checkbox.checked = true;
+
+  checkbox.addEventListener("change", () => {
+    localStorage.setItem(`diary-${today}-${index}`, checkbox.checked);
+
+    const dateKey = `diary-stamp-${today}-${index}`;
+    if (checkbox.checked) {
+      localStorage.setItem(dateKey, d.emoji);
+
+      const existingMemo = div.querySelector(".memo-box");
+      if (!existingMemo) {
+        const memoBox = document.createElement("div");
+        memoBox.className = "memo-box";
+        memoBox.innerHTML = `
+          <input type="text" class="memo-input" placeholder="メモ（任意）">
+          <button class="memo-save">保存</button>
+        `;
+        div.appendChild(memoBox);
+
+        memoBox.querySelector(".memo-save").addEventListener("click", () => {
+          const memo = memoBox.querySelector(".memo-input").value;
+          localStorage.setItem(`diary-memo-${today}-${index}`, memo);
+          memoBox.remove();
+        });
+      }
+    } else {
+      localStorage.removeItem(dateKey);
+    }
+    buildCalendar();
+  });
+});
 
 const dailyIndices = JSON.parse(localStorage.getItem("daily-indices") || "[]");
 
@@ -152,11 +210,21 @@ for (let i = 0; i < firstDay; i++) {
     cell.className = "calendar-cell";
     // この日の達成絵文字を取得
   const dateStr = new Date(year, month, day).toDateString();
-  const stamps = praxisList
-  .map((p, index) => localStorage.getItem(`stamp-${dateStr}-${index}`) || "")
-  .join("");
+ const praxisStamps = praxisList
+    .map((p, index) => localStorage.getItem(`stamp-${dateStr}-${index}`) || "")
+    .join("");
 
-cell.innerHTML = `
+  const diaryStamps = diaryList
+    .map((d, index) => {
+      const stamp = localStorage.getItem(`diary-stamp-${dateStr}-${index}`);
+      return stamp ? `<span class="diary-stamp">${stamp}</span>` : "";
+    })
+    .join("");
+
+  const stamps = praxisStamps + diaryStamps;
+
+  const hasDiary = !!localStorage.getItem(`diary-${dateStr}`);
+  cell.innerHTML = `
   <span class="day-number">${day}</span>
   <span class="stamps">${stamps}</span>
 `;
@@ -182,10 +250,32 @@ cell.addEventListener("click", () => {
     list.appendChild(row);
   });
 
+const diaryKey = `diary-${dateStr}`;
+  const diaryArea = document.getElementById("memo-modal-diary");
+  diaryArea.value = localStorage.getItem(diaryKey) || "";
+
+ // 日記メモを表示
+  diaryList.forEach((d, index) => {
+    const stamp = localStorage.getItem(`diary-stamp-${dateStr}-${index}`);
+    if (!stamp) return;
+
+    const memo = localStorage.getItem(`diary-memo-${dateStr}-${index}`) || "";
+    const row = document.createElement("div");
+    row.innerHTML = `
+      <span>${d.emoji}</span>
+      <input type="text" value="${memo}" data-diary-index="${index}" data-date="${dateStr}">
+    `;
+    list.appendChild(row);
+  });
+
   document.getElementById("memo-modal-close").onclick = () => {
     list.querySelectorAll("input").forEach(input => {
+    list.querySelectorAll("[data-diary-index]").forEach(input => {
+      localStorage.setItem(`diary-memo-${input.dataset.date}-${input.dataset.diaryIndex}`, input.value);
+    });
       localStorage.setItem(`memo-${input.dataset.date}-${input.dataset.index}`, input.value);
     });
+    localStorage.setItem(diaryKey, diaryArea.value);
     modal.style.display = "none";
   };
 

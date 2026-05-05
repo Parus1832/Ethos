@@ -16,3 +16,11 @@
   font-weight: bold;
   padding: 4px;
 }
+
+.diary-stamp {
+  display: inline-block;
+  border: 1.5px solid #aaa;
+  border-radius: 4px;
+  padding: 0px 2px;
+  margin: 1px;
+}
