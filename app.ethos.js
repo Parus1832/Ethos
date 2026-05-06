@@ -1,6 +1,7 @@
 const praxisList = [
   { emoji: "🌱", text: "Svarmate bultuqarbuz", level: "初級", frequency: 3 },
   { emoji: "🛡️", text: "Anelte Plank durd-cuti", level: "初級", frequency: 1 },
+  { emoji: "🏖️", text: "UL", level: "初級", frequency: 4 },
   { emoji: "💅", text: "Qaigute nogatuk", level: "中級", frequency: 12 },
   { emoji: "🛏️", text: "Tabdiჲlte prostinuz", level: "中級", frequency: 7 },
   { emoji: "🚶", text: "Rafte hamar gnumner", level: "中級", frequency: 3 },
@@ -8,11 +9,13 @@ const praxisList = [
   { emoji: "📒", text: "Katabte tetruz", level: "上級", frequency: 4 },
   { emoji: "🎙️", text: "Zingte liduk", level: "上級", frequency: 4 },
   { emoji: "🚀", text: "", level: "上級", frequency: 4 },
+  { emoji: "⌨️", text: "Katabte", level: "上級", frequency: 4 },
 ];
 
 const diaryList = [
   { emoji: "🍴", text: "Yemad", },
   { emoji: "🍳", text: "Bişirad", },
+  { emoji: "🛍️", text: "Rafad hamar qidisad", },
   { emoji: "🎶", text: "Xor", },
   { emoji: "🎹", text: "Talamad", },
   { emoji: "🎥", text: "Rafad depi hamerg kam pilmi", },
