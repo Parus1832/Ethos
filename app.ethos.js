@@ -1,6 +1,6 @@
 const praxisList = [
   { emoji: "🌱", text: "Svarmate bultuqarbuz", level: "初級", frequency: 3 },
-  { emoji: "🛡️", text: "Anelte Plank durd-cuti", level: "初級", frequency: 1 },
+  { emoji: "🛡️", text: "Anelte marrana iki-cuti", level: "初級", frequency: 1 },
   { emoji: "🏖️", text: "UL", level: "初級", frequency: 4 },
   { emoji: "💅", text: "Qaigute nogatuk", level: "中級", frequency: 12 },
   { emoji: "🛏️", text: "Tabdiჲlte prostinuz", level: "中級", frequency: 7 },
@@ -282,6 +282,26 @@ const diaryKey = `diary-${dateStr}`;
     modal.style.display = "none";
   };
 
+   // 日記スタンプボタンを生成
+  const stampButtons = document.getElementById("diary-stamp-buttons");
+  stampButtons.innerHTML = "";
+  diaryList.forEach((d, index) => {
+    const btn = document.createElement("button");
+    const isStamped = localStorage.getItem(`diary-stamp-${dateStr}-${index}`);
+    btn.textContent = d.emoji;
+    btn.className = isStamped ? "diary-stamp-btn active" : "diary-stamp-btn";
+    btn.addEventListener("click", () => {
+      if (localStorage.getItem(`diary-stamp-${dateStr}-${index}`)) {
+        localStorage.removeItem(`diary-stamp-${dateStr}-${index}`);
+        btn.className = "diary-stamp-btn";
+      } else {
+        localStorage.setItem(`diary-stamp-${dateStr}-${index}`, d.emoji);
+        btn.className = "diary-stamp-btn active";
+      }
+      buildCalendar();
+    });
+    stampButtons.appendChild(btn);
+  });
   modal.style.display = "block";
 });
     grid.appendChild(cell);
