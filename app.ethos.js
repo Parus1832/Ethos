@@ -1,3 +1,29 @@
+function calcArete(level, isDaily) {
+  const base = { "初級": 1, "中級": 2, "上級": 3 };
+  return (base[level] || 1) + (isDaily ? 1 : 0);
+}
+
+function getTotalArete() {
+  return parseInt(localStorage.getItem("total-arete") || "0");
+}
+
+function addArete(amount) {
+  const current = getTotalArete();
+  localStorage.setItem("total-arete", current + amount);
+  updateAreteDisplay();
+}
+
+function removeArete(amount) {
+  const current = getTotalArete();
+  localStorage.setItem("total-arete", Math.max(0, current - amount));
+  updateAreteDisplay();
+}
+
+function updateAreteDisplay() {
+  const el = document.getElementById("arete-display");
+  if (el) el.textContent = `🏅 ${getTotalArete()}`;
+}
+
 const praxisList = [
   { emoji: "🌱", text: "Svarmate bultuqarbuz", level: "初級", frequency: 3 },
   { emoji: "🛡️", text: "Anelte marrana iki-cuti", level: "初級", frequency: 1 },
@@ -13,7 +39,6 @@ const praxisList = [
 ];
 
 const diaryList = [
-  { emoji: "🍴", text: "Yemad", },
   { emoji: "🍳", text: "Bişirad", },
   { emoji: "🛍️", text: "Rafad hamar qidisad", },
   { emoji: "🎶", text: "Xor", },
@@ -21,6 +46,7 @@ const diaryList = [
   { emoji: "🎥", text: "Rafad depi hamerg kam pilmi", },
   { emoji: "🧍", text: "Gyorşad het dost", },
   { emoji: "🫏", text: "karad", },
+  { emoji: "✈️", text: "", },
   { emoji: "💬", text: "", },
 ];
 
@@ -145,6 +171,8 @@ praxisList.forEach((p, index) => {
 
     const dateKey = `stamp-${today}-${index}`;
     if (checkbox.checked) {
+      const isDaily = dailyIndices.includes(index);
+      addArete(calcArete(p.level, isDaily));
       localStorage.setItem(dateKey, p.emoji);
       localStorage.setItem(`last-done-${index}`, today);
 
@@ -165,6 +193,8 @@ praxisList.forEach((p, index) => {
         });
       }
     } else {
+      const isDaily = dailyIndices.includes(index);
+      removeArete(calcArete(p.level, isDaily));
       localStorage.removeItem(dateKey);
     }
     buildCalendar();
@@ -392,3 +422,4 @@ function scheduleNotification() {
 }
 
 scheduleNotification();
+updateAreteDisplay();

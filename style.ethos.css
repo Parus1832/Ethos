@@ -40,6 +40,15 @@ nav button:hover {
   color: #4682B4;
 }
 
+#arete-display {
+  margin-left: auto;
+  color: #FFC000;
+  font-weight: bold;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+}
+
 /* ===== 見出し ===== */
 h1 {
   text-align: center;
